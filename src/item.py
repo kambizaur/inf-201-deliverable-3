@@ -1,6 +1,10 @@
+from dice import Dice
+
+
 class Weapon:
+
     """Represents a weapon in the RPG."""
-    import Dice
+
     def __init__(self, name: str, damage_dice: Dice) -> None:
         """
         Initialise the Weapon
@@ -12,5 +16,9 @@ class Weapon:
         self.name = name
         self.damage_dice = damage_dice
 
-    def roll_damage(self, ):
-        pass
+    def roll_damage(self) -> int:
+        return self.damage_dice.roll()
+
+    def __repr__(self) -> str:
+        """Representation of weapon object"""
+        return f"Weapon name={self.name} damage={self.damage_dice}"
