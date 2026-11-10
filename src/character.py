@@ -18,10 +18,17 @@ class Character:
         self.hp_max = hp_max
         self.damage = damage
 
+    def take_damage(self, damage_points: int):
+        """Subtract damage_points from the character's HP, without going below 0."""
+        self._hp = max(0, self._hp - damage_points)
+
+    def heal(self, heal_points: int):
+        """Add heal_points to the character's HP, without going above hp_max."""
+        self._hp = min(self.hp_max, self._hp + heal_points)
+
     def attack(self, target) -> None:
         """Attack and deal damage to target character"""
-        target._hp -= self.damage
-        target._hp = max(target._hp, 0)  # Target hp cannot end up lower than 0
+        target.take_damage(self.damage)
 
     def introduce(self) -> None:
         """Creates string that introduces character"""
@@ -39,3 +46,57 @@ class Character:
     def hp(self) -> int:
         """Public read-only property to inspect HP without allowing direct, unsafe edits."""
         return self._hp
+
+    @property
+    def is_alive(self) -> bool:
+        """Public read-only property to check if HP > 0"""
+        return self._hp > 0
+
+
+class Warrior(Character):
+    """Represent a character with warrior specialization."""
+
+    def __init__(
+            self,
+            name: str,
+            hp_max: int,
+            damage: int,
+            armor: int = 5,
+    ) -> None:
+        """Initialize a warrior with an armor level."""
+        super().__init__(name, hp_max, damage)
+        self.armor = armor
+
+    def take_damage(self, damage_points: int) -> None:
+        """Subtract damage_points reduced by armor."""
+        super().take_damage(max(0, damage_points - self.armor))
+
+
+class Mage(Character):
+    """Represent a character with mage specialization."""
+
+    SPELL_COST = 10
+    SPELL_MULTIPLIER = 2
+    MANA_REGEN = 5
+
+    def __init__(
+            self,
+            name: str,
+            hp_max: int,
+            damage: int,
+            mana: int = 30,
+            mana_max: int = 30
+    ) -> None:
+        """Initialize a mage with a mana level."""
+        super().__init__(name, hp_max, damage)
+        self.mana = mana
+        self.mana_max = mana_max
+
+    def attack(self, target) -> None:
+        """Attack with magic if mana allows, else attack and regain mana."""
+        if self.mana >= self.SPELL_COST:
+            target.take_damage(self.damage * self.SPELL_MULTIPLIER)
+            self.mana -= self.SPELL_COST
+        else:
+            super().attack(target)
+            self.mana = min(self.mana_max, self.mana + self.MANA_REGEN)
