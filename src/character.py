@@ -32,7 +32,7 @@ class Character:
     def attack(self, target) -> None:
         """Attack and deal damage to target character"""
         if self.weapon is not None:
-            target.weapon.roll_damage()
+            target.take_damage(self.weapon.roll_damage())
         else:
             target.take_damage(self.damage)
 
