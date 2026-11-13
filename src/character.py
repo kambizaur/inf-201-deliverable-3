@@ -67,10 +67,11 @@ class Warrior(Character):
             name: str,
             hp_max: int,
             damage: int,
+            weapon: Weapon | None = None,
             armor: int = 5,
     ) -> None:
         """Initialize a warrior with an armor level."""
-        super().__init__(name, hp_max, damage)
+        super().__init__(name, hp_max, damage, weapon)
         self.armor = armor
 
     def take_damage(self, damage_points: int) -> None:
@@ -90,11 +91,12 @@ class Mage(Character):
             name: str,
             hp_max: int,
             damage: int,
+            weapon: Weapon | None = None,
             mana: int = 30,
             mana_max: int = 30
     ) -> None:
         """Initialize a mage with a mana level."""
-        super().__init__(name, hp_max, damage)
+        super().__init__(name, hp_max, damage, weapon)
         self.mana = mana
         self.mana_max = mana_max
 
